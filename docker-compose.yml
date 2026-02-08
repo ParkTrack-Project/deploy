@@ -1,0 +1,66 @@
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: parktrack
+      POSTGRES_PASSWORD: parktrack_password
+      POSTGRES_DB: parktrack
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api-server:
+    build: ../api-server
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - DB_CONNECTION_URL=postgresql://parktrack:parktrack_password@db:5432/parktrack
+      - HOST=0.0.0.0
+      - PORT=8000
+    ports:
+      - "8000:8000"
+
+  car-detector:
+    build: ../car-detector
+    restart: always
+    depends_on:
+      - api-server
+    environment:
+      - API_URL=http://api-server:8000
+      - API_TOKEN=dev_token
+    # If using GPU, uncomment below:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  web-map:
+    build: 
+      context: ../web-map
+      args:
+        - VITE_API_BASE_URL=http://localhost:8000
+    restart: always
+    depends_on:
+      - api-server
+    ports:
+      - "13000:80"
+
+  labeler:
+    build: 
+      context: ../labeler
+      args:
+        - VITE_API_BASE_URL=http://localhost:8000
+    restart: always
+    depends_on:
+      - api-server
+    ports:
+      - "13001:80"
+
+volumes:
+  db_data:
