@@ -41,10 +41,12 @@ services:
     #           capabilities: [gpu]
 
   web-map:
-    build: 
+    build:
       context: ../web-map
       args:
         - VITE_API_BASE_URL=http://localhost:8000
+        - VITE_YMAP_KEY=8177fb59-0ad8-4b24-8045-22878697dfbd
+        - VITE_AUTH_MODE=mock
     restart: always
     depends_on:
       - api-server
