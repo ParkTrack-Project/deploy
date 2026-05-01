@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car-detector
+  namespace: parktrack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: car-detector
+  template:
+    metadata:
+      labels:
+        app: car-detector
+    spec:
+      containers:
+      - name: car-detector
+        image: ghcr.io/parktrack-project/car-detector:latest # {"$imagepolicy": "flux-system:car-detector"}
+        env:
+        - name: API_URL
+          value: "http://api-server:8000"
+        - name: API_TOKEN
+          valueFrom:
+            configMapKeyRef:
+              name: api-server-config
+              key: api_token
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "2000m"
+            # nvidia.com/gpu: 1  # Uncomment for GPU
+      imagePullSecrets:
+      - name: ghcr-credentials
+      # nodeSelector:        # Uncomment for GPU nodes
+      #   gpu: "true"
+      # tolerations:
+      # - key: nvidia.com/gpu
+      #   operator: Exists
+      #   effect: NoSchedule

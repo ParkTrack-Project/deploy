@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server
+  namespace: parktrack
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-server
+  template:
+    metadata:
+      labels:
+        app: api-server
+    spec:
+      containers:
+      - name: api-server
+        image: ghcr.io/parktrack-project/api-server:latest
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: DB_CONNECTION_URL
+          valueFrom:
+            secretKeyRef:
+              name: api-server-secret
+              key: db-url
+        - name: HOST
+          value: "0.0.0.0"
+        - name: PORT
+          value: "8000"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+            # Is not compatible whit current
+#        livenessProbe:
+#          httpGet:
+#            path: /health
+#            port: 8000
+#          initialDelaySeconds: 30
+#          periodSeconds: 10
+#        readinessProbe:
+#          httpGet:
+#            path: /ready
+#            port: 8000
+#          initialDelaySeconds: 5
+#          periodSeconds: 5
+      imagePullSecrets:
+      - name: ghcr-credentials
