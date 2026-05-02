@@ -36,13 +36,12 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-            # Is not compatible whit current
-#        livenessProbe:
-#          httpGet:
-#            path: /health
-#            port: 8000
-#          initialDelaySeconds: 30
-#          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
 #        readinessProbe:
 #          httpGet:
 #            path: /ready
