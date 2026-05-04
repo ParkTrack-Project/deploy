@@ -2,7 +2,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: parktrack-gateway
-  namespace: parktrack
 spec:
   gatewayClassName: nginx
   listeners:
@@ -11,13 +10,13 @@ spec:
     port: 80
     allowedRoutes:
       namespaces:
-        from: Same
+        from: All
   - name: https
     protocol: HTTPS
     port: 443
     allowedRoutes:
       namespaces:
-        from: Same
+        from: All
     tls:
       mode: Terminate
       certificateRefs:
