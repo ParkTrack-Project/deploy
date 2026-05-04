@@ -11,53 +11,58 @@ services:
     ports:
       - "5432:5432"
 
+  api-server-database-migrate:
+    image: ghcr.io/parktrack-project/api-server-migrate:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    restart: no
+
   api-server:
-    build: ../api-server
+    image: ghcr.io/parktrack-project/api-server-app:latest
     restart: always
     depends_on:
-      - db
+      api-server-database-migrate:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
     environment:
       - DB_CONNECTION_URL=postgresql://parktrack:parktrack_password@db:5432/parktrack
       - HOST=0.0.0.0
       - PORT=8000
+      - API_TOKEN=dev_token
     ports:
       - "8000:8000"
 
-  car-detector:
-    build: ../car-detector
-    restart: always
-    depends_on:
-      - api-server
-    environment:
-      - API_URL=http://api-server:8000
-      - API_TOKEN=dev_token
-    # If using GPU, uncomment below:
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
+#  car-detector:
+#    image: ghcr.io/parktrack-project/car-detector:latest
+#    restart: always
+#    depends_on:
+#      - api-server
+#    environment:
+#      - API_URL=http://api-server:8000
+#      - API_TOKEN=dev_token
+#    # If using GPU, uncomment below:
+#    # deploy:
+#    #   resources:
+#    #     reservations:
+#    #       devices:
+#    #         - driver: nvidia
+#    #           count: 1
+#    #           capabilities: [gpu]
 
   web-map:
-    build:
-      context: ../web-map
-      args:
-        - VITE_API_BASE_URL=http://localhost:8000
-        - VITE_YMAP_KEY=${VITE_YMAP_KEY:?VITE_YMAP_KEY must be set in deploy/.env}
-        - VITE_AUTH_MODE=mock
+    image: ghcr.io/parktrack-project/web-map:latest
     restart: always
     depends_on:
       - api-server
     ports:
       - "13000:80"
 
-  labeler:
-    build: 
-      context: ../labeler
-      args:
-        - VITE_API_BASE_URL=http://localhost:8000
+  admin-panel:
+    image: ghcr.io/parktrack-project/admin-panel:latest
     restart: always
     depends_on:
       - api-server
