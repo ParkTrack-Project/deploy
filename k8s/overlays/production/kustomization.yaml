@@ -7,7 +7,9 @@ resources:
   - ../../base
 
 images:
-  - name: ghcr.io/parktrack-project/api-server
+  - name: ghcr.io/parktrack-project/api-server-app
+    newTag: latest
+  - name: ghcr.io/parktrack-project/api-server-migrate
     newTag: latest
   - name: ghcr.io/parktrack-project/car-detector
     newTag: latest
