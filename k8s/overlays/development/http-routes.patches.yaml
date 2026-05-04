@@ -1,0 +1,9 @@
+- op: replace
+  path: /spec/hostnames/0
+  value: api.dev.parktrack.live
+- op: replace
+  path: /spec/hostnames/0
+  value: dev.parktrack.live
+- op: replace
+  path: /spec/hostnames/0
+  value: admin.dev.parktrack.live

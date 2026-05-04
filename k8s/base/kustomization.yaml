@@ -10,8 +10,11 @@ resources:
   - api-server/service.yaml
   - api-server/configmap.yaml
   - api-server/secret.yaml
+  - api-server/http-route.yaml
   - car-detector/deployment.yaml
   - web-map/deployment.yaml
   - web-map/service.yaml
+  - web-map/http-route.yaml
   - admin-panel/deployment.yaml
   - admin-panel/service.yaml
+  - admin-panel/http-route.yaml
