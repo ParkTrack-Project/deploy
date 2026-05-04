@@ -1,9 +1,21 @@
-- op: replace
-  path: /spec/hostnames/0
-  value: api.dev.parktrack.live
-- op: replace
-  path: /spec/hostnames/0
-  value: dev.parktrack.live
-- op: replace
-  path: /spec/hostnames/0
-  value: admin.dev.parktrack.live
+- target:
+    kind: HTTPRoute
+    name: api-server-route
+  patch: |-
+    - op: replace
+      path: /spec/hostnames/0
+      value: api.dev.parktrack.live
+- target:
+    kind: HTTPRoute
+    name: web-map-route
+  patch: |-
+    - op: replace
+      path: /spec/hostnames/0
+      value: dev.parktrack.live
+- target:
+    kind: HTTPRoute
+    name: admin-panel-route
+  patch: |-
+    - op: replace
+      path: /spec/hostnames/0
+      value: admin.dev.parktrack.live
