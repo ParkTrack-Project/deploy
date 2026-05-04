@@ -13,14 +13,37 @@ spec:
       labels:
         app: api-server
     spec:
+      initContainers:
+      - name: api-server-migrate
+        image: ghcr.io/parktrack-project/api-server-migrate:latest
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        - name: POSTGRES_DB
+          value: "parktrack"
+        - name: POSTGRES_TEST_DB
+          value: "test_db"
+        volumeMounts:
+        - name: migrations
+          mountPath: /app/migrations
+        - name: scripts
+          mountPath: /app/scripts
       containers:
-      - name: api-server
-        image: ghcr.io/parktrack-project/api-server:latest
+      - name: api-server-app
+        image: ghcr.io/parktrack-project/api-server-app:latest
         ports:
         - containerPort: 8000
           name: http
         env:
-        - name: DB_CONNECTION_URL
+        - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
               name: api-server-secret
