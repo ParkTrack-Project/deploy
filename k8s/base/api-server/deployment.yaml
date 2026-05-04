@@ -31,11 +31,6 @@ spec:
           value: "parktrack"
         - name: POSTGRES_TEST_DB
           value: "test_db"
-        volumeMounts:
-        - name: migrations
-          mountPath: /app/migrations
-        - name: scripts
-          mountPath: /app/scripts
       containers:
       - name: api-server-app
         image: ghcr.io/parktrack-project/api-server-app:latest
