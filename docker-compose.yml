@@ -16,7 +16,7 @@ services:
       start_period: 30s
 
   api-server-database-migrate:
-    image: ghcr.io/parktrack-project/api-server-migrate:latest
+    image: ghcr.io/parktrack-project/api-server-migrate:${TAG:-latest}
     depends_on:
       db:
         condition: service_healthy
@@ -25,7 +25,7 @@ services:
     restart: no
 
   api-server:
-    image: ghcr.io/parktrack-project/api-server-app:latest
+    image: ghcr.io/parktrack-project/api-server-app:${TAG:-latest}
     restart: always
     depends_on:
       api-server-database-migrate:
@@ -42,7 +42,7 @@ services:
       - "8000:8000"
 
 #  car-detector:
-#    image: ghcr.io/parktrack-project/car-detector:latest
+#    image: ghcr.io/parktrack-project/car-detector:${TAG:-latest}
 #    restart: always
 #    depends_on:
 #      - api-server
@@ -59,7 +59,7 @@ services:
 #    #           capabilities: [gpu]
 
   web-map:
-    image: ghcr.io/parktrack-project/web-map:latest
+    image: ghcr.io/parktrack-project/web-map:${TAG:-latest}
     restart: always
     depends_on:
       - api-server
@@ -67,7 +67,7 @@ services:
       - "13000:80"
 
   admin-panel:
-    image: ghcr.io/parktrack-project/admin-panel:latest
+    image: ghcr.io/parktrack-project/admin-panel:${TAG:-latest}
     restart: always
     depends_on:
       - api-server
