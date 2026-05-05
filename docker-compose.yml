@@ -2,10 +2,8 @@ services:
   db:
     image: postgres:15
     restart: always
-    environment:
-      POSTGRES_USER: parktrack
-      POSTGRES_PASSWORD: parktrack_password
-      POSTGRES_DB: parktrack
+    env_file:
+      - .env
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
@@ -34,8 +32,9 @@ services:
         condition: service_completed_successfully
       db:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
-      - DB_CONNECTION_URL=postgresql://parktrack:parktrack_password@db:5432/parktrack
       - HOST=0.0.0.0
       - PORT=8000
       - API_TOKEN=dev_token
