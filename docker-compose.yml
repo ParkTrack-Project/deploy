@@ -72,6 +72,8 @@ services:
     restart: always
     depends_on:
       - api-server
+    env_file:
+      - .env
     ports:
       - "${WEB_MAP_PORT:-13000}:80"
 
@@ -81,6 +83,8 @@ services:
     restart: always
     depends_on:
       - api-server
+    env_file:
+      - .env
     ports:
       - "${ADMIN_PANEL_PORT:-13001}:80"
 
