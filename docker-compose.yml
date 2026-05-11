@@ -17,7 +17,7 @@ services:
 
   api-server-database-migrate:
     image: ghcr.io/parktrack-project/api-server-migrate:${TAG:-latest}
-    pull_policy: every_30s
+    pull_policy: always
     depends_on:
       db:
         condition: service_healthy
@@ -27,7 +27,7 @@ services:
 
   api-server:
     image: ghcr.io/parktrack-project/api-server-app:${TAG:-latest}
-    pull_policy: every_30s
+    pull_policy: always
     restart: always
     depends_on:
       api-server-database-migrate:
@@ -68,7 +68,7 @@ services:
 
   web-map:
     image: ghcr.io/parktrack-project/web-map:${TAG:-latest}
-    pull_policy: every_30s
+    pull_policy: always
     restart: always
     depends_on:
       - api-server
@@ -79,7 +79,7 @@ services:
 
   admin-panel:
     image: ghcr.io/parktrack-project/admin-panel:${TAG:-latest}
-    pull_policy: every_30s
+    pull_policy: always
     restart: always
     depends_on:
       - api-server
