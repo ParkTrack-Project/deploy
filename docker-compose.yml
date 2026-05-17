@@ -49,22 +49,29 @@ services:
     ports:
       - "${API_SERVER_PORT:-8000}:8000"
 
-#  car-detector:
-#    image: ghcr.io/parktrack-project/car-detector:${TAG:-latest}
-#    restart: always
-#    depends_on:
-#      - api-server
-#    environment:
-#      - API_URL=http://api-server:8000
-#      - API_TOKEN=dev_token
-#    # If using GPU, uncomment below:
-#    # deploy:
-#    #   resources:
-#    #     reservations:
-#    #       devices:
-#    #         - driver: nvidia
-#    #           count: 1
-#    #           capabilities: [gpu]
+  car-detector:
+    image: ghcr.io/parktrack-project/car-detector:${TAG:-latest}
+    pull_policy: always
+    restart: always
+    depends_on:
+      api-server:
+        condition: service_healthy
+    environment:
+      - API_URL=http://api-server:8000/api/v1
+      - API_TOKEN=dev_token
+      - CAR_DETECTOR_IMAGES_DIRECTORY_PATH=/var/parktrack/car-detector/images
+    env_file:
+      - .env
+    volumes:
+      - car-detector-images:/var/parktrack/car-detector/images
+    # If using GPU, uncomment below:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
 
   web-map:
     image: ghcr.io/parktrack-project/web-map:${TAG:-latest}
@@ -90,3 +97,4 @@ services:
 
 volumes:
   db_data:
+  car-detector-images:
